@@ -1,6 +1,7 @@
 package ga;
 import problems.*;
 import java.util.Collections;
+import java.util.Random;
 
 public class SimpleGeneticAlgorithm {
 
@@ -49,10 +50,10 @@ public class SimpleGeneticAlgorithm {
 		}
 
 		for (int i = elitismOffset; i < pop.getIndividuals().size(); i++) {
-			Individual indiv1 = tournamentSelection(pop);
-			Individual indiv2 = tournamentSelection(pop);
-			Individual newIndiv = crossover(indiv1, indiv2);
-			newPopulation.getIndividuals().add(i, newIndiv);
+			Individual parent1 = tournamentSelection(pop);
+			Individual parent2 = tournamentSelection(pop);
+			Individual child = crossover(parent1, parent2);
+			newPopulation.getIndividuals().add(i, child);
 		}
 
 		for (int i = elitismOffset; i < newPopulation.getIndividuals().size(); i++) {
@@ -62,25 +63,40 @@ public class SimpleGeneticAlgorithm {
 		return newPopulation;
 	}
 
-	private Individual crossover(Individual indiv1, Individual indiv2) {
-		Individual newChild = new Individual(this.problem);
-		for (int i = 0; i < newChild.getDefaultGeneLength(); i++) {
+	private Individual crossover(Individual parent1, Individual parent2) {
+		Individual child = new Individual(this.problem);
+		for (int i = 0; i < child.getDefaultGeneLength(); i++) {
+
+			// Averaging the parents values is mutating them only the else is doing crossover in my opinion.
 			if (Math.random() <= crossoverRate) {
-				newChild.setSingleGene(i, indiv1.getSingleGene(i));
+				child.setSingleGene(i, (parent1.getSingleGene(i) + parent2.getSingleGene(i))/2);
 			} else {
-				newChild.setSingleGene(i, indiv2.getSingleGene(i));
+				if (Math.random() <= 0.5) {
+					child.setSingleGene(i, parent1.getSingleGene(i));
+				}
+				else{
+					child.setSingleGene(i, parent2.getSingleGene(i));
+				}
 			}
 		}
 		if(verbose){
-			System.out.println("newChild: "+ newChild);
+			System.out.println("Child: "+ child);
 		}
-		return newChild;
+		return child;
 	}
 
 	private void mutate(Individual indiv) {
+		Random r = new Random();
 		for (int i = 0; i < indiv.getDefaultGeneLength(); i++) {
-			if (Math.random() <= mutationRate) {
-				byte gene = (byte) Math.round(Math.random());
+			if (Math.random() <= mutationRate)
+			{
+				double gene = 0.1*r.nextGaussian() + indiv.getSingleGene(i);
+				if (gene > this.problem.getMaxValues().get(i)){
+					gene = this.problem.getMaxValues().get(i);
+				}
+				else if (gene < this.problem.getMinValues().get(i)){
+					gene = this.problem.getMinValues().get(i);
+				}
 				indiv.setSingleGene(i, gene);
 			}
 		}
@@ -98,13 +114,5 @@ public class SimpleGeneticAlgorithm {
 
 	protected static double getFitness(Individual individual, Problem problem) {
 		return problem.Eval(individual.getGenes());
-	}
-
-	public Problem getProblem() {
-		return problem;
-	}
-
-	public void setProblem(Problem problem) {
-		this.problem = problem;
 	}
 }

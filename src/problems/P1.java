@@ -20,6 +20,7 @@ public class P1 extends Problem {
 
 	@Override
 	public double Eval(ArrayList<Double> paramVals) {
+		this.EvalCallCount++;
 		return Math.pow(Math.E, -(Math.pow(paramVals.get(0), 2.0) + Math.pow(paramVals.get(1), 2.0)));
 	}
 

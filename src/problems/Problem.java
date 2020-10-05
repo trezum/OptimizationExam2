@@ -6,6 +6,7 @@ public abstract class Problem {
 
 	private ArrayList<Double> maxValues;
 	private ArrayList<Double> minValues;
+	public int EvalCallCount = 0;
 
 	public Problem() {
 		maxValues = new ArrayList<>();
@@ -32,4 +33,10 @@ public abstract class Problem {
 		return minValues;
 	}
 
+	public void ResetEvalCallCount() {
+		EvalCallCount = 0;
+	}
+	public int GetEvalCallCount() {
+		return EvalCallCount;
+	}
 }

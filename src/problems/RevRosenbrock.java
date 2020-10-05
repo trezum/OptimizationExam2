@@ -22,6 +22,7 @@ public class RevRosenbrock extends Problem {
 
 	@Override
 	public double Eval(ArrayList<Double> paramVals) {
+		this.EvalCallCount++;
 		int numberOfVariables = paramVals.size();
 
 		double[] x = new double[numberOfVariables];

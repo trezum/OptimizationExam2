@@ -22,6 +22,7 @@ public class RevSphere extends Problem {
 
 	@Override
 	public double Eval(ArrayList<Double> paramVals) {
+		this.EvalCallCount++;
 		double sum = 0.0;
 		for (int i = 0; i < paramVals.size(); i++) {
 			sum = sum - Math.pow(paramVals.get(i), 2.0);

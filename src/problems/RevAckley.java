@@ -21,6 +21,7 @@ public class RevAckley extends Problem {
 	@Override
 	public double Eval(ArrayList<Double> paramVals) {
 
+		this.EvalCallCount++;
 		double sum1 = 0.0;
 		double sum2 = 0.0;
 

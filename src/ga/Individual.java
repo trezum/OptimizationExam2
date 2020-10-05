@@ -2,7 +2,7 @@ package ga;
 import problems.Problem;
 import java.util.ArrayList;
 
-public class Individual {
+public class Individual implements Comparable<Individual> {
 
 	protected int defaultGeneLength = 2;
 	private ArrayList<Double> genes = new ArrayList<Double>();
@@ -57,5 +57,14 @@ public class Individual {
 
 	public int getDefaultGeneLength() {
 		return defaultGeneLength;
+	}
+
+	@Override
+	public int compareTo(Individual otherIndividual) {
+		if (this.getFitness() < otherIndividual.getFitness())
+			return -1;
+		if (this.getFitness() > otherIndividual.getFitness())
+			return 1;
+		return 0;
 	}
 }

@@ -1,6 +1,7 @@
-
 package ga;
 import problems.*;
+import java.util.Collections;
+
 public class SimpleGeneticAlgorithm {
 
 	private double crossoverRate = 0.5;
@@ -8,7 +9,8 @@ public class SimpleGeneticAlgorithm {
 	private int tournamentSize = 5;
 	private Problem problem;
 	private int generations = 0;
-	private int elite = 1;
+	private int elite = 0;
+	private boolean verbose = false;
 
 	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize){
 		this.problem = problem;
@@ -21,13 +23,12 @@ public class SimpleGeneticAlgorithm {
 	public boolean runAlgorithm(int populationSize) {
 		Population myPop = new Population(populationSize, true, this.problem);
 
-		int generationCount = 0;
+		int generationCount = 1;
 		while (generationCount < generations) {
-			System.out.println("Generation: " + generationCount + " Correct genes found: " + myPop.getFittest().getFitness());
+			System.out.println("Generation: " + generationCount + " Eval calls: "+ problem.EvalCallCount+" Eval: " + myPop.getFittest().getFitness());
 			myPop = evolvePopulation(myPop);
 			generationCount++;
 		}
-		System.out.println("Solution found!");
 		System.out.println("Generation: " + generationCount);
 		System.out.println("Genes: ");
 		System.out.println(myPop.getFittest());
@@ -35,14 +36,16 @@ public class SimpleGeneticAlgorithm {
 	}
 
 	public Population evolvePopulation(Population pop) {
-		int elitismOffset;
+		int elitismOffset = elite;
 		Population newPopulation = new Population(pop.getIndividuals().size(), false, this.problem);
+		pop.getIndividuals().sort(Individual::compareTo);
 
-		if (true) {
-			newPopulation.getIndividuals().add(0, pop.getFittest());
-			elitismOffset = 1;
-		} else {
-			elitismOffset = 0;
+		// Reverse because we are maximizing
+		Collections.reverse(pop.getIndividuals());
+
+		// Adding the elite individuals
+		for (int i = 0; i < elitismOffset; i++) {
+			newPopulation.getIndividuals().add(i, pop.getIndividuals().get(i));
 		}
 
 		for (int i = elitismOffset; i < pop.getIndividuals().size(); i++) {
@@ -60,15 +63,18 @@ public class SimpleGeneticAlgorithm {
 	}
 
 	private Individual crossover(Individual indiv1, Individual indiv2) {
-		Individual newSol = new Individual(this.problem);
-		for (int i = 0; i < newSol.getDefaultGeneLength(); i++) {
+		Individual newChild = new Individual(this.problem);
+		for (int i = 0; i < newChild.getDefaultGeneLength(); i++) {
 			if (Math.random() <= crossoverRate) {
-				newSol.setSingleGene(i, indiv1.getSingleGene(i));
+				newChild.setSingleGene(i, indiv1.getSingleGene(i));
 			} else {
-				newSol.setSingleGene(i, indiv2.getSingleGene(i));
+				newChild.setSingleGene(i, indiv2.getSingleGene(i));
 			}
 		}
-		return newSol;
+		if(verbose){
+			System.out.println("newChild: "+ newChild);
+		}
+		return newChild;
 	}
 
 	private void mutate(Individual indiv) {

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 public class MainApp {
-	private static final int numberOfAveragingLoops = 1;
+	private static final int numberOfAveragingLoops = 1000;
 
 	private static final int defaultElite = 5;
 	private static final int defaultPopulationSize = 100;
@@ -19,7 +19,7 @@ public class MainApp {
 
 	public static void main(String[] args) {
 		iterateParamsIndividually();
-		//iterateParams();
+
 //		Problem p = new RevAckley();
 //		//SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm(p,100,0.025,0.5,5,1);
 //		SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm(p,100,0.025,0.75,5,1);
@@ -45,12 +45,12 @@ public class MainApp {
 			SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
 			printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(defaultPopulationSize))),p,"");
 
-//			varyGenerations(p);
+			varyGenerations(p);
 //			varyPopulationSize(p);
 //			varyTournamentSize(p);
 //			varyElite(p);
 //			varyCrossoverRate(p);
-			varyMutationRate(p);
+//			varyMutationRate(p);
 		}
 		long finish = System.currentTimeMillis();
 		long timeElapsedSeconds = (finish - start)/1000;
@@ -58,7 +58,7 @@ public class MainApp {
 	}
 
 	private static void varyMutationRate(Problem p) {
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary MutationRate ---------------------");
 		SimpleGeneticAlgorithm sga;
 		for (double i = 0.0; i <= 0.51 ; i+=0.025) {
 			ArrayList<Individual> individuals = new ArrayList<>();
@@ -71,7 +71,7 @@ public class MainApp {
 	}
 
 	private static void varyCrossoverRate(Problem p) {
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary CrossoverRate ---------------------");
 		SimpleGeneticAlgorithm sga;
 		for (double i = 0.1; i <= 1 ; i+=0.1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
@@ -84,7 +84,7 @@ public class MainApp {
 	}
 
 	private static void varyElite(Problem p) {
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary Elite ---------------------");
 		SimpleGeneticAlgorithm sga;
 		for (int i = 0; i <= 20 ; i+=1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
@@ -97,7 +97,7 @@ public class MainApp {
 	}
 
 	private static void varyTournamentSize(Problem p){
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary TournamentSize ---------------------");
 		SimpleGeneticAlgorithm sga;
 		for (int i = 1; i <= 15 ; i+=1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
@@ -110,7 +110,7 @@ public class MainApp {
 	}
 
 	private static void varyPopulationSize(Problem p){
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary PopulationSize ---------------------");
 		SimpleGeneticAlgorithm sga;
 		//Can not be lower than 5 becaus of the default elite size.
 		for (int i = 20; i <= 200 ; i+=20) {
@@ -124,9 +124,9 @@ public class MainApp {
 	}
 
 	private static void varyGenerations(Problem p){
-		System.out.println("---------------------" + p.getName() + "---------------------");
+		System.out.println("--------------------- " + p.getName() + " vary Generations ---------------------");
 		SimpleGeneticAlgorithm sga;
-		for (int i = 0; i <= 200 ; i+=20) {
+		for (int i = 300; i <= 500 ; i+=20) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
 				sga = new SimpleGeneticAlgorithm(p, i, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
@@ -137,9 +137,19 @@ public class MainApp {
 	}
 
 	//Averaging eval does not make sense for this evolutionary algorithm because it is always the same with the same parameters.
-	//If we add a goal for the algorithm and end the run after it has been reached it would make sense.
+	//If we add a goal for the algorithm and end the run after it has been reached it would make sense, maybe i will have time to do that.
 	private static void printAverages(ArrayList<Individual> individuals, Problem p, String vary){
-		System.out.println(vary + "Fitness:\t" + calculateAverageFitness(individuals) + "\t\t" + "Evaluations:\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
+		//Console
+		//System.out.println(vary + "Fitness:\t" + calculateAverageFitness(individuals) + "\t\t" + "Evaluations:\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
+
+		//Excel
+		Locale currentLocale = Locale.getDefault();
+		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
+		otherSymbols.setDecimalSeparator(',');
+		DecimalFormat df = new DecimalFormat("#.####################", otherSymbols);
+		System.out.println(vary+df.format(+calculateAverageFitness(individuals)) + "\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
+
+		//Reset eval count
 		p.resetEvalCallCount();
 	}
 

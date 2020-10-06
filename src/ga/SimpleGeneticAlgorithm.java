@@ -11,7 +11,7 @@ public class SimpleGeneticAlgorithm {
 	private Problem problem;
 	private int generations = 0;
 	private int elite = 0;
-	private boolean verbose = true;
+	private boolean verbose = false;
 
 	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize, int elite){
 		this.problem = problem;

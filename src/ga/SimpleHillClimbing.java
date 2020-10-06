@@ -143,12 +143,12 @@ public class SimpleHillClimbing {
 					{
 						var point = test.findOptima(iterations[i],stepSizes[s],neighbours[n]);
 						//For console
-						System.out.println("Iterations:" + iterations[i] + "\tStepsize:" + stepSizes[s]+ "\tNeighbours:" + neighbours[n]+"\t"+ p.EvalCallCount+ "\t" + String.format("%.14f", p.Eval(point))+ "\t" + point);
+						System.out.println("Iterations:" + iterations[i] + "\tStepsize:" + stepSizes[s]+ "\tNeighbours:" + neighbours[n]+"\t"+ p.getEvalCallCount()+ "\t" + String.format("%.14f", p.Eval(point))+ "\t" + point);
 
 						//For excel
 						//System.out.println(iterations[i] + "\t" + stepSizes[s]+ "\t" + neighbours[n]+"\t"+ p.EvalCallCount+ "\t" + df.format(p.Eval(point))+ "\t" + point);
 
-						p.ResetEvalCallCount();
+						p.resetEvalCallCount();
 					}
 				}
 			}
@@ -160,7 +160,7 @@ public class SimpleHillClimbing {
 		var point = test.findOptima(1000000,0.00001,100);
 		System.out.println(point);
 		System.out.println(p.Eval(point));
-		System.out.println(p.EvalCallCount);
+		System.out.println(p.getEvalCallCount());
 }
 	public static void evalBest(){
 		var p1Top = new ArrayList<Double>();

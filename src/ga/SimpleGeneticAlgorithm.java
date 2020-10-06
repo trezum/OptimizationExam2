@@ -11,29 +11,34 @@ public class SimpleGeneticAlgorithm {
 	private Problem problem;
 	private int generations = 0;
 	private int elite = 0;
-	private boolean verbose = false;
+	private boolean verbose = true;
 
-	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize){
+	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize, int elite){
 		this.problem = problem;
 		this.generations = generations;
 		this.mutationRate = mutationRate;
 		this.crossoverRate = crossOverRate;
 		this.tournamentSize = tournamentSize;
+		this.elite = elite;
 	}
 
-	public boolean runAlgorithm(int populationSize) {
+	public Individual runAlgorithm(int populationSize) {
 		Population myPop = new Population(populationSize, true, this.problem);
 
 		int generationCount = 1;
 		while (generationCount < generations) {
-			System.out.println("Generation: " + generationCount + " Eval calls: "+ problem.EvalCallCount+" Eval: " + myPop.getFittest().getFitness());
+			if (verbose){
+				System.out.println("Generation: " + generationCount + " Eval calls: "+ problem.getEvalCallCount()+" Eval: " + myPop.getFittest().getFitness());
+			}
 			myPop = evolvePopulation(myPop);
 			generationCount++;
 		}
-		System.out.println("Generation: " + generationCount);
-		System.out.println("Genes: ");
-		System.out.println(myPop.getFittest());
-		return true;
+		if (verbose){
+			System.out.println("Generation: " + generationCount);
+			System.out.println("Genes: ");
+			System.out.println(myPop.getFittest());
+		}
+		return myPop.getFittest();
 	}
 
 	public Population evolvePopulation(Population pop) {
@@ -78,9 +83,6 @@ public class SimpleGeneticAlgorithm {
 					child.setSingleGene(i, parent2.getSingleGene(i));
 				}
 			}
-		}
-		if(verbose){
-			System.out.println("Child: "+ child);
 		}
 		return child;
 	}

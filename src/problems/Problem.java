@@ -6,7 +6,7 @@ public abstract class Problem {
 
 	private ArrayList<Double> maxValues;
 	private ArrayList<Double> minValues;
-	public int EvalCallCount = 0;
+	protected int EvalCallCount = 0;
 
 	public Problem() {
 		maxValues = new ArrayList<>();
@@ -16,6 +16,10 @@ public abstract class Problem {
 	public abstract double Eval(ArrayList<Double> paramVals);
 
 	public abstract int getDimensions();
+	public String getName(){
+		String[] stringArray = getClass().getName().split("\\.");
+		return stringArray[stringArray.length-1];
+	}
 
 	public void setMaxValues(ArrayList<Double> maxVals) {
 		maxValues = maxVals;
@@ -33,10 +37,10 @@ public abstract class Problem {
 		return minValues;
 	}
 
-	public void ResetEvalCallCount() {
+	public void resetEvalCallCount() {
 		EvalCallCount = 0;
 	}
-	public int GetEvalCallCount() {
+	public int getEvalCallCount() {
 		return EvalCallCount;
 	}
 }

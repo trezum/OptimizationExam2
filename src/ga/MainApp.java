@@ -22,12 +22,40 @@ public class MainApp {
 		//iterateParams()
 		//iterateParamsIndividually();
 		//paramsOptimizedByExperiments();
-		paramsBestOnlyTwentyRuns();
+		//paramsBestOnlyTwentyRuns();
 
-//		Problem p = new RevRosenbrock();
-//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,100000,0.025,0.50,5,1);
-//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(5000))),p,"");
+		improvementStatistics();
+
+//		Problem p = new P1();
+//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,1000,0.025,0.50,5,1);
+//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(200))),p,"");
+
+
+
 	}
+
+	private static void improvementStatistics() {
+		int generations = 500;
+		Problem p = new RevRosenbrock();
+		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,generations,defaultMutationRate,defaultCrossoverRate,defaultTournamentSize,defaultElite);
+
+		int[] statisticTotals = new int[generations];
+
+		for (int i = 0; i < 2000; i++) {
+			int[] statistics = sga.runAlgorithmReturnStatistics(defaultPopulationSize);
+			for (int j = 0; j < statistics.length; j++) {
+				statisticTotals[j] += statistics[j];
+			}
+		}
+
+		for (int i = 0; i < statisticTotals.length; i++) {
+			System.out.println(i+1+"\t"+statisticTotals[i]);
+		}
+		System.out.println("Done");
+
+
+	}
+
 
 	private static void paramsBestOnlyTwentyRuns() {
 		int loops = 20;

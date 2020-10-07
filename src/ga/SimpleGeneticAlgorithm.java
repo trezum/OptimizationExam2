@@ -41,6 +41,24 @@ public class SimpleGeneticAlgorithm {
 		return myPop.getFittest();
 	}
 
+	public int[] runAlgorithmReturnStatistics(int populationSize) {
+		Population myPop = new Population(populationSize, true, this.problem);
+		int generationCount = 0;
+		int[] improvementStatistics = new int[generations];
+		double bestFitness = -10000000;
+		while (generationCount < generations) {
+			var fitness = myPop.getFittest().getFitness();
+			if (fitness > bestFitness)
+			{
+				bestFitness = fitness;
+				improvementStatistics[generationCount]++;
+			}
+			myPop = evolvePopulation(myPop);
+			generationCount++;
+		}
+		return improvementStatistics;
+	}
+
 	public Population evolvePopulation(Population pop) {
 		int elitismOffset = elite;
 		Population newPopulation = new Population(pop.getIndividuals().size(), false, this.problem);

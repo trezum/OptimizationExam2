@@ -18,26 +18,45 @@ public class MainApp {
 	private static final double defaultMutationRate = 0.025;
 
 	public static void main(String[] args) {
-		iterateParamsIndividually();
 
-//		Problem p = new RevAckley();
-//		//SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm(p,100,0.025,0.5,5,1);
-//		SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm(p,100,0.025,0.75,5,1);
-//		ga.runAlgorithm(100);
-//
-//		System.out.println("Eval calls:" + p.EvalCallCount);
+		//iterateParams()
+		//iterateParamsIndividually();
+		paramsOptimizedByExperiments();
+
+//		Problem p = new RevRosenbrock();
+//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,100000,0.025,0.50,5,1);
+//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(5000))),p,"");
+	}
+
+	private static void paramsOptimizedByExperiments() {
+		simpleAveraging(new P1(),500,200,2,0,0.475,0.9);
+		simpleAveraging(new P2(),500,200,5,4,0.45,0.3);
+		simpleAveraging(new RevAckley(),500,200,2,2,0.475,0.9);
+		simpleAveraging(new RevSphere(),500,200,15,3,0.075,0.2);
+		simpleAveraging(new RevRosenbrock(), 480,200,6,6,0.6,0.6);
+	}
+
+	private static void simpleAveraging(Problem p,int generations, int populationSize,int tournamentSize, int elite, double mutationRate, double crossoverRate) {
+		System.out.println("--------------------- " + p.getName() + " ---------------------");
+		SimpleGeneticAlgorithm sga;
+		ArrayList<Individual> individuals = new ArrayList<>();
+		for (int j = 0; j < numberOfAveragingLoops; j++) {
+			sga = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize, elite);
+			individuals.add(sga.runAlgorithm(populationSize));
+		}
+		printAverages(individuals,p,"");
 	}
 
 	private static void iterateParamsIndividually(){
 		long start = System.currentTimeMillis();
 
-
 		ArrayList<Problem> problems = new ArrayList<Problem>();
 		problems.add(new P1());
-//		problems.add(new P2());
-//		problems.add(new RevAckley());
-//		problems.add(new RevSphere());
-//		problems.add(new RevRosenbrock());
+		problems.add(new P2());
+		problems.add(new RevAckley());
+		problems.add(new RevSphere());
+		problems.add(new RevRosenbrock());
+
 		for (Problem p : problems)
 		{
 			System.out.println("---------------------" + p.getName() + "---------------------");
@@ -45,12 +64,14 @@ public class MainApp {
 			SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
 			printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(defaultPopulationSize))),p,"");
 
+			// The vary methods could be merged to one, but it seems like more work because of the many parameters.
+			// Also a way of handling the swap of iterated parameter would be needed.
 			varyGenerations(p);
-//			varyPopulationSize(p);
-//			varyTournamentSize(p);
-//			varyElite(p);
-//			varyCrossoverRate(p);
-//			varyMutationRate(p);
+			varyPopulationSize(p);
+			varyTournamentSize(p);
+			varyElite(p);
+			varyCrossoverRate(p);
+			varyMutationRate(p);
 		}
 		long finish = System.currentTimeMillis();
 		long timeElapsedSeconds = (finish - start)/1000;
@@ -126,7 +147,7 @@ public class MainApp {
 	private static void varyGenerations(Problem p){
 		System.out.println("--------------------- " + p.getName() + " vary Generations ---------------------");
 		SimpleGeneticAlgorithm sga;
-		for (int i = 300; i <= 500 ; i+=20) {
+		for (int i = 0; i <= 500 ; i+=20) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
 				sga = new SimpleGeneticAlgorithm(p, i, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
@@ -164,7 +185,7 @@ public class MainApp {
 		}
 		Individual averageIndividual = new Individual(p);
 		for (int i = 0; i < individuals.get(0).defaultGeneLength; i++) {
-			averageIndividual.setSingleGene(i,averageGenes[i]);
+			averageIndividual.setSingleGene(i,averageGenes[i]/individuals.size());
 		}
 		return averageIndividual;
 	}

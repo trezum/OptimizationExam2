@@ -177,6 +177,36 @@ public class SimpleHillClimbing {
 		revAckleyTop.add(0.0);
 		revAckleyTop.add(0.0);
 		System.out.println("RevAckley top eval: " + new RevAckley().Eval(revAckleyTop));
+
+		var revRosenbrockTop = new ArrayList<Double>();
+		revRosenbrockTop.add(1.0);
+		revRosenbrockTop.add(1.0);
+		revRosenbrockTop.add(1.0);
+		System.out.println("RevRosenbrock top eval: " + new RevRosenbrock().Eval(revRosenbrockTop));
+
+		var revSphereTop = new ArrayList<Double>();
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		revSphereTop.add(0.0);
+		System.out.println("RevSphere top eval: " + new RevSphere().Eval(revSphereTop));
+
 	}
 	private static void evalP2Points() {
 		//Point from experimentation
@@ -201,7 +231,8 @@ public class SimpleHillClimbing {
 	public static void main(String[] args) {
 		//runOne();
 		//evalP2Points();
-		iterateAllParams();
+//		iterateAllParams();
 		evalBest();
+
 	}
 }

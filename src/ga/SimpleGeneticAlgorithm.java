@@ -5,12 +5,12 @@ import java.util.Random;
 
 public class SimpleGeneticAlgorithm {
 
-	private double crossoverRate = 0.5;
-	private double mutationRate = 0.025;
-	private int tournamentSize = 5;
+	private double crossoverRate;
+	private double mutationRate;
+	private int tournamentSize;
 	private Problem problem;
-	private int generations = 0;
-	private int elite = 0;
+	private int generations;
+	private int elite;
 	private boolean verbose = false;
 
 	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize, int elite){

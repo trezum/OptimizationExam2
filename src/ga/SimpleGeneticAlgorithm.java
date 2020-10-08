@@ -11,18 +11,20 @@ public class SimpleGeneticAlgorithm {
 	private Problem problem;
 	private int generations;
 	private int elite;
+	private int populationSize;
 	private boolean verbose = false;
 
-	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize, int elite){
+	public SimpleGeneticAlgorithm(Problem problem, int generations, double mutationRate, double crossOverRate, int tournamentSize, int elite, int populationSize){
 		this.problem = problem;
 		this.generations = generations;
 		this.mutationRate = mutationRate;
 		this.crossoverRate = crossOverRate;
 		this.tournamentSize = tournamentSize;
 		this.elite = elite;
+		this.populationSize = populationSize;
 	}
 
-	public Individual runAlgorithm(int populationSize) {
+	public Individual runAlgorithm() {
 		Population myPop = new Population(populationSize, true, this.problem);
 
 		int generationCount = 1;
@@ -41,7 +43,7 @@ public class SimpleGeneticAlgorithm {
 		return myPop.getFittest();
 	}
 
-	public int[] runAlgorithmReturnStatistics(int populationSize) {
+	public int[] runAlgorithmReturnStatistics() {
 		Population myPop = new Population(populationSize, true, this.problem);
 		int generationCount = 0;
 		int[] improvementStatistics = new int[generations];

@@ -35,14 +35,16 @@ public class MainApp {
 	}
 
 	private static void improvementStatistics() {
+		System.out.println("--------------------- Collecting simple improvementstatistics ---------------------");
+
 		int generations = 500;
 		Problem p = new RevRosenbrock();
-		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,generations,defaultMutationRate,defaultCrossoverRate,defaultTournamentSize,defaultElite);
+		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,generations,defaultMutationRate,defaultCrossoverRate,defaultTournamentSize,defaultElite,defaultPopulationSize);
 
 		int[] statisticTotals = new int[generations];
 
 		for (int i = 0; i < 2000; i++) {
-			int[] statistics = sga.runAlgorithmReturnStatistics(defaultPopulationSize);
+			int[] statistics = sga.runAlgorithmReturnStatistics();
 			for (int j = 0; j < statistics.length; j++) {
 				statisticTotals[j] += statistics[j];
 			}
@@ -52,12 +54,10 @@ public class MainApp {
 			System.out.println(i+1+"\t"+statisticTotals[i]);
 		}
 		System.out.println("Done");
-
-
 	}
 
-
 	private static void paramsBestOnlyTwentyRuns() {
+		System.out.println("--------------------- Running each problem with params optimized individually ( 20 runs ) ---------------------");
 		int loops = 20;
 		simpleAveraging(loops, new P1(),defaultGenerations,200,defaultTournamentSize,defaultElite,defaultMutationRate,defaultCrossoverRate);
 		simpleAveraging(loops, new P2(),500,200,5,4,0.45,0.3);
@@ -67,6 +67,7 @@ public class MainApp {
 	}
 	
 	private static void paramsOptimizedByExperiments() {
+		System.out.println("--------------------- Running each problem with params optimized individually ( 1000 runs )  ---------------------");
 		int loops = 1000;
 		simpleAveraging(loops, new P1(),500,200,2,0,0.475,0.9);
 		simpleAveraging(loops, new P2(),500,200,5,4,0.45,0.3);
@@ -80,13 +81,14 @@ public class MainApp {
 		SimpleGeneticAlgorithm sga;
 		ArrayList<Individual> individuals = new ArrayList<>();
 		for (int j = 0; j < loops; j++) {
-			sga = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize, elite);
-			individuals.add(sga.runAlgorithm(populationSize));
+			sga = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize, elite,populationSize);
+			individuals.add(sga.runAlgorithm());
 		}
 		printAverages(individuals,p,"");
 	}
 
 	private static void iterateParamsIndividually(){
+		System.out.println("--------------------- Iterating params individually ---------------------");
 		long start = System.currentTimeMillis();
 
 		ArrayList<Problem> problems = new ArrayList<Problem>();
@@ -100,8 +102,8 @@ public class MainApp {
 		{
 			System.out.println("---------------------" + p.getName() + "---------------------");
 			System.out.println("Default parameters");
-			SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
-			printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(defaultPopulationSize))),p,"");
+			SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite,defaultPopulationSize);
+			printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm())),p,"");
 
 			// The vary methods could be merged to one, but it seems like more work because of the many parameters.
 			// Also a way of handling the swap of iterated parameter would be needed.
@@ -123,8 +125,8 @@ public class MainApp {
 		for (double i = 0.0; i <= 0.51 ; i+=0.025) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, i, defaultCrossoverRate, defaultTournamentSize, defaultElite);
-				individuals.add(sga.runAlgorithm(defaultPopulationSize));
+				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, i, defaultCrossoverRate, defaultTournamentSize, defaultElite,defaultPopulationSize);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"MutationRate:\t" + i +"\t");
 		}
@@ -136,8 +138,8 @@ public class MainApp {
 		for (double i = 0.1; i <= 1 ; i+=0.1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, i, defaultTournamentSize, defaultElite);
-				individuals.add(sga.runAlgorithm(defaultPopulationSize));
+				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, i, defaultTournamentSize, defaultElite,defaultPopulationSize);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"CrossoverRate:\t" + i +"\t");
 		}
@@ -149,8 +151,8 @@ public class MainApp {
 		for (int i = 0; i <= 20 ; i+=1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, i);
-				individuals.add(sga.runAlgorithm(defaultPopulationSize));
+				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, i,defaultPopulationSize);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"Elite:\t" + i +"\t");
 		}
@@ -162,8 +164,8 @@ public class MainApp {
 		for (int i = 1; i <= 15 ; i+=1) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, i, defaultElite);
-				individuals.add(sga.runAlgorithm(defaultPopulationSize));
+				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, i, defaultElite,defaultPopulationSize);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"TournamentSize:\t" + i +"\t");
 		}
@@ -176,8 +178,8 @@ public class MainApp {
 		for (int i = 20; i <= 200 ; i+=20) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
-				individuals.add(sga.runAlgorithm(i));
+				sga = new SimpleGeneticAlgorithm(p, defaultGenerations, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite,i);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"PopulationSize:\t" + i +"\t");
 		}
@@ -189,8 +191,8 @@ public class MainApp {
 		for (int i = 0; i <= 500 ; i+=20) {
 			ArrayList<Individual> individuals = new ArrayList<>();
 			for (int j = 0; j < numberOfAveragingLoops; j++) {
-				sga = new SimpleGeneticAlgorithm(p, i, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite);
-				individuals.add(sga.runAlgorithm(defaultPopulationSize));
+				sga = new SimpleGeneticAlgorithm(p, i, defaultMutationRate, defaultCrossoverRate, defaultTournamentSize, defaultElite,defaultPopulationSize);
+				individuals.add(sga.runAlgorithm());
 			}
 			printAverages(individuals,p,"Generations:\t" + i +"\t");
 		}
@@ -239,6 +241,7 @@ public class MainApp {
 	}
 
 	private static void iterateParams(){
+		System.out.println("--------------------- Iterating all param combinations ---------------------");
 		//The data output of this method is too big to continue working with manually, iterateParamsIndividually() instead.
 		ArrayList<Problem> problems = new ArrayList<Problem>();
 		problems.add(new P1());
@@ -262,8 +265,8 @@ public class MainApp {
 						for (double crossoverRate = 0.25; crossoverRate <= 1.0; crossoverRate += 0.25) {
 							for (int tournamentSize = 2; tournamentSize <= 10; tournamentSize += 2) {
 								for (int elite = 0; elite <= 5; elite += 1) {
-									SimpleGeneticAlgorithm test = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize,elite);
-									var bestIndividual = test.runAlgorithm(population);
+									SimpleGeneticAlgorithm test = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize,elite,population);
+									var bestIndividual = test.runAlgorithm();
 
 									//For console
 									System.out.println(

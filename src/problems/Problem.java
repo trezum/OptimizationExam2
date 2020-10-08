@@ -14,7 +14,7 @@ public abstract class Problem {
 	}
 
 	public abstract double Eval(ArrayList<Double> paramVals);
-
+	public abstract Double getOptimumEvalIfKnown();
 	public abstract int getDimensions();
 	public String getName(){
 		String[] stringArray = getClass().getName().split("\\.");

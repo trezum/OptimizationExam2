@@ -22,16 +22,54 @@ public class MainApp {
 		//iterateParams()
 		//iterateParamsIndividually();
 		//paramsOptimizedByExperiments();
+		//paramsOptimizedByEvolution();
 		//paramsBestOnlyTwentyRuns();
 
 		improvementStatistics();
 
-//		Problem p = new P1();
-//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,1000,0.025,0.50,5,1);
-//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm(200))),p,"");
+		//metaEvolution();
+
+		//Problem p = new P1();
+		//Evolution output without number of eval calls added to the evaluation
+		//(Elite, TournamentSize, CrossoverRate, MutationRate)
+		//(49.147453436680394, 2.495336483339826, 0.007442726948065038, 0.6862191166882516)
+//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,100,0.0797626714579248,0.7315456770732854,3,17,100);
+//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm())),p,"");
 
 
+	}
 
+	private static void metaEvolution()
+	{
+		int metaEvolutionElite = 5;
+		int metaEvolutionPopulationSize = 50;
+		int metaEvolutionGenerations = 50;
+		int metaEvolutionTournamentSize = 5;
+		double metaEvolutionCrossoverRate = 0.5;
+		double metaEvolutionMutationRate = 0.025;
+
+		Problem metaEvolution;
+		SimpleGeneticAlgorithm sga;
+
+		metaEvolution = new MetaEvolution(new P1());
+		sga = new SimpleGeneticAlgorithm(metaEvolution,metaEvolutionGenerations,metaEvolutionMutationRate,metaEvolutionCrossoverRate,metaEvolutionTournamentSize,metaEvolutionElite,metaEvolutionPopulationSize);
+		System.out.println("P1 best params: "+sga.runAlgorithm());
+
+		metaEvolution = new MetaEvolution(new P2());
+		sga = new SimpleGeneticAlgorithm(metaEvolution,metaEvolutionGenerations,metaEvolutionMutationRate,metaEvolutionCrossoverRate,metaEvolutionTournamentSize,metaEvolutionElite,metaEvolutionPopulationSize);
+		System.out.println("P2 best params: "+sga.runAlgorithm());
+
+		metaEvolution = new MetaEvolution(new RevAckley());
+		sga = new SimpleGeneticAlgorithm(metaEvolution,metaEvolutionGenerations,metaEvolutionMutationRate,metaEvolutionCrossoverRate,metaEvolutionTournamentSize,metaEvolutionElite,metaEvolutionPopulationSize);
+		System.out.println("RevAckley best params: "+sga.runAlgorithm());
+
+		metaEvolution = new MetaEvolution(new RevSphere());
+		sga = new SimpleGeneticAlgorithm(metaEvolution,metaEvolutionGenerations,metaEvolutionMutationRate,metaEvolutionCrossoverRate,metaEvolutionTournamentSize,metaEvolutionElite,metaEvolutionPopulationSize);
+		System.out.println("RevSphere best params: "+sga.runAlgorithm());
+
+		metaEvolution = new MetaEvolution(new RevRosenbrock());
+		sga = new SimpleGeneticAlgorithm(metaEvolution,metaEvolutionGenerations,metaEvolutionMutationRate,metaEvolutionCrossoverRate,metaEvolutionTournamentSize,metaEvolutionElite,metaEvolutionPopulationSize);
+		System.out.println("RevRosenbrock best params: "+sga.runAlgorithm());
 	}
 
 	private static void improvementStatistics() {
@@ -40,6 +78,22 @@ public class MainApp {
 		int generations = 500;
 		Problem p = new RevRosenbrock();
 		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,generations,defaultMutationRate,defaultCrossoverRate,defaultTournamentSize,defaultElite,defaultPopulationSize);
+
+		//For collecting statistics about evolved parameters.
+//		p = new RevRosenbrock();
+//		sga = new SimpleGeneticAlgorithm(p,generations,0.9716876109240646,0.41709542320557935,28,2,defaultPopulationSize);
+//		p = new RevSphere();
+//		sga = new SimpleGeneticAlgorithm(p,generations,0.067058123074578,0.45338452344530400,27,1,defaultPopulationSize);
+		p = new P1();
+		sga = new SimpleGeneticAlgorithm(p,generations,0.686219116688251,0.00744272694806503,2,49,defaultPopulationSize);
+
+		//For collecting statistics about parmeters found by isolated optimization.
+// 		p = new P1();
+//		sga = new SimpleGeneticAlgorithm(p,generations,0.475,0.9,2,0,defaultPopulationSize);
+//		p = new RevSphere();
+//		sga = new SimpleGeneticAlgorithm(p,generations,0.075,0.2,15,3,defaultPopulationSize);
+//		p = new RevRosenbrock();
+//		sga = new SimpleGeneticAlgorithm(p,generations,0.6,0.6,6,6,defaultPopulationSize);
 
 		int[] statisticTotals = new int[generations];
 
@@ -74,6 +128,17 @@ public class MainApp {
 		simpleAveraging(loops, new RevAckley(),500,200,2,2,0.475,0.9);
 		simpleAveraging(loops, new RevSphere(),500,200,15,3,0.075,0.2);
 		simpleAveraging(loops, new RevRosenbrock(), 480,200,6,6,0.6,0.6);
+	}
+
+	private static void paramsOptimizedByEvolution() {
+		System.out.println("--------------------- Running each problem with params optimized individually ( 1000 runs )  ---------------------");
+		int loops = 1000;
+
+		simpleAveraging(loops, new P1(),500,200,2,49,0.686219116688251,0.00744272694806503);
+		simpleAveraging(loops, new P2(),500,200,28,49,0.000518120601988,0.50352736404037500);
+		simpleAveraging(loops, new RevAckley(),500,200,1,27,0.0,0.65349378631203100);
+		simpleAveraging(loops, new RevSphere(),500,200,27,1,0.067058123074578	,0.45338452344530400);
+		simpleAveraging(loops, new RevRosenbrock(), 500,200,28,2,0.971687610924064,0.41709542320557900);
 	}
 
 	private static void simpleAveraging(int loops,Problem p,int generations, int populationSize,int tournamentSize, int elite, double mutationRate, double crossoverRate) {
@@ -218,14 +283,14 @@ public class MainApp {
 	//The problem p argument is not really used here, this is kind of a hacked usage of individuals in their current form.
 	//I added the problem here for good measure so the individual still belongs to the current problem.
 	private static Individual calculateAverageIndividual(ArrayList<Individual> individuals, Problem p){
-		double[] averageGenes = new double[individuals.get(0).defaultGeneLength];
+		double[] averageGenes = new double[individuals.get(0).getDefaultGeneLength()];
 		for (Individual i : individuals) {
-			for (int j = 0; j < i.defaultGeneLength; j++) {
+			for (int j = 0; j < i.getDefaultGeneLength(); j++) {
 				averageGenes[j] += i.getSingleGene(j);
 			}
 		}
 		Individual averageIndividual = new Individual(p);
-		for (int i = 0; i < individuals.get(0).defaultGeneLength; i++) {
+		for (int i = 0; i < individuals.get(0).getDefaultGeneLength(); i++) {
 			averageIndividual.setSingleGene(i,averageGenes[i]/individuals.size());
 		}
 		return averageIndividual;
@@ -245,10 +310,10 @@ public class MainApp {
 		//The data output of this method is too big to continue working with manually, iterateParamsIndividually() instead.
 		ArrayList<Problem> problems = new ArrayList<Problem>();
 		problems.add(new P1());
-//		problems.add(new P2());
-//		problems.add(new RevAckley());
-//		problems.add(new RevSphere());
-//		problems.add(new RevRosenbrock());
+		problems.add(new P2());
+		problems.add(new RevAckley());
+		problems.add(new RevSphere());
+		problems.add(new RevRosenbrock());
 
 		Locale currentLocale = Locale.getDefault();
 		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);

@@ -36,6 +36,11 @@ public class RevAckley extends Problem {
 	}
 
 	@Override
+	public Double getOptimumEvalIfKnown() {
+		return 0.000000000000000000;
+	}
+
+	@Override
 	public int getDimensions() {
 		return 2;
 	}

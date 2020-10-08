@@ -25,6 +25,11 @@ public class P1 extends Problem {
 	}
 
 	@Override
+	public Double getOptimumEvalIfKnown() {
+		return 1.000000000000000000;
+	}
+
+	@Override
 	public int getDimensions() {
 		return 2;
 	}

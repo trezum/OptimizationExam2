@@ -43,6 +43,24 @@ public class SimpleGeneticAlgorithm {
 		return myPop.getFittest();
 	}
 
+	public Individual runAlgorithmWithStopAtOptimum() {
+		problem.resetEvalCallCount();
+		Population myPop = new Population(populationSize, true, this.problem);
+
+		int generationCount = 1;
+		while (generationCount < generations) {
+			if (this.problem.getOptimumEvalIfKnown() != null) {
+				if (myPop.getFittest().getFitness() == this.problem.getOptimumEvalIfKnown()){
+					//Using break here just to handle the null in java, could be added to the while loop with inline nullcheck.
+					break;
+				}
+			}
+			myPop = evolvePopulation(myPop);
+			generationCount++;
+		}
+		return myPop.getFittest();
+	}
+
 	public int[] runAlgorithmReturnStatistics() {
 		Population myPop = new Population(populationSize, true, this.problem);
 		int generationCount = 0;
@@ -132,9 +150,5 @@ public class SimpleGeneticAlgorithm {
 		}
 		Individual fittest = tournament.getFittest();
 		return fittest;
-	}
-
-	protected static double getFitness(Individual individual, Problem problem) {
-		return problem.Eval(individual.getGenes());
 	}
 }

@@ -24,19 +24,8 @@ public class MainApp {
 		//paramsOptimizedByExperiments();
 		//paramsOptimizedByEvolution();
 		//paramsBestOnlyTwentyRuns();
-
-		improvementStatistics();
-
+		//improvementStatistics();
 		//metaEvolution();
-
-		//Problem p = new P1();
-		//Evolution output without number of eval calls added to the evaluation
-		//(Elite, TournamentSize, CrossoverRate, MutationRate)
-		//(49.147453436680394, 2.495336483339826, 0.007442726948065038, 0.6862191166882516)
-//		SimpleGeneticAlgorithm sga = new SimpleGeneticAlgorithm(p,100,0.0797626714579248,0.7315456770732854,3,17,100);
-//		printAverages(new ArrayList(Arrays.asList(sga.runAlgorithm())),p,"");
-
-
 	}
 
 	private static void metaEvolution()
@@ -123,20 +112,20 @@ public class MainApp {
 	private static void paramsOptimizedByExperiments() {
 		System.out.println("--------------------- Running each problem with params optimized individually ( 1000 runs )  ---------------------");
 		int loops = 1000;
-		simpleAveraging(loops, new P1(),500,200,2,0,0.475,0.9);
+		simpleAveraging(loops, new P1(),500,50,2,0,0.475,0.9);
 		simpleAveraging(loops, new P2(),500,200,5,4,0.45,0.3);
-		simpleAveraging(loops, new RevAckley(),500,200,2,2,0.475,0.9);
+		simpleAveraging(loops, new RevAckley(),500,50,2,2,0.475,0.9);
 		simpleAveraging(loops, new RevSphere(),500,200,15,3,0.075,0.2);
 		simpleAveraging(loops, new RevRosenbrock(), 480,200,6,6,0.6,0.6);
 	}
 
 	private static void paramsOptimizedByEvolution() {
-		System.out.println("--------------------- Running each problem with params optimized individually ( 1000 runs )  ---------------------");
+		System.out.println("--------------------- Running each problem with params optimized by evolution ( 1000 runs )  ---------------------");
 		int loops = 1000;
 
-		simpleAveraging(loops, new P1(),500,200,2,49,0.686219116688251,0.00744272694806503);
+		simpleAveraging(loops, new P1(),500,50,2,49,0.686219116688251,0.00744272694806503);
 		simpleAveraging(loops, new P2(),500,200,28,49,0.000518120601988,0.50352736404037500);
-		simpleAveraging(loops, new RevAckley(),500,200,1,27,0.0,0.65349378631203100);
+		simpleAveraging(loops, new RevAckley(),500,50,1,27,0.0,0.65349378631203100);
 		simpleAveraging(loops, new RevSphere(),500,200,27,1,0.067058123074578	,0.45338452344530400);
 		simpleAveraging(loops, new RevRosenbrock(), 500,200,28,2,0.971687610924064,0.41709542320557900);
 	}
@@ -147,7 +136,7 @@ public class MainApp {
 		ArrayList<Individual> individuals = new ArrayList<>();
 		for (int j = 0; j < loops; j++) {
 			sga = new SimpleGeneticAlgorithm(p, generations, mutationRate, crossoverRate, tournamentSize, elite,populationSize);
-			individuals.add(sga.runAlgorithm());
+			individuals.add(sga.runAlgorithmWithStopAtOptimum());
 		}
 		printAverages(individuals,p,"");
 	}
@@ -267,14 +256,14 @@ public class MainApp {
 	//If we add a goal for the algorithm and end the run after it has been reached it would make sense, maybe i will have time to do that.
 	private static void printAverages(ArrayList<Individual> individuals, Problem p, String vary){
 		//Console
-		//System.out.println(vary + "Fitness:\t" + calculateAverageFitness(individuals) + "\t\t" + "Evaluations:\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
+		System.out.println(vary + "Fitness:\t" + calculateAverageFitness(individuals) + "\t\t" + "Evaluations:\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
 
 		//Excel
 		Locale currentLocale = Locale.getDefault();
 		DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(currentLocale);
 		otherSymbols.setDecimalSeparator(',');
 		DecimalFormat df = new DecimalFormat("#.####################", otherSymbols);
-		System.out.println(vary+df.format(+calculateAverageFitness(individuals)) + "\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
+		//System.out.println(vary+df.format(+calculateAverageFitness(individuals)) + "\t" + p.getEvalCallCount()/individuals.size() + "\t" + calculateAverageIndividual(individuals,p));
 
 		//Reset eval count
 		p.resetEvalCallCount();

@@ -46,7 +46,7 @@ public class MetaEvolution extends Problem  {
             evalCount += problem.getEvalCallCount();
         }
         double eval = abs(calculateAverageFitness(bestIndividuals)) * (-1*evalCount);
-        System.out.println(eval + "\t" + paramVals);
+        //System.out.println(eval + "\t" + paramVals);
         return eval;
     }
 
